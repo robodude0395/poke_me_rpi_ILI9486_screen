@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: Python_ILI9486
+Version: 1.1.0
+Summary: Library to control an ILI9486 TFT LCD display.
+Home-page: https://github.com/adafruit/Adafruit_Python_ILI9341/
+Author: Liqun Hu
+Author-email: huliquns@126.com
+License: MIT
+License-File: LICENSE
+Requires-Dist: Adafruit-GPIO>=0.6.5
+Dynamic: author
+Dynamic: author-email
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
