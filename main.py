@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 import Python_ILI9486 as TFT
 import Adafruit_GPIO as GPIO
 import Adafruit_GPIO.SPI as SPI
-from messages import Messages
+from messages import Messages, get_message_line_count
 
 app = Flask(__name__)
 
@@ -103,13 +103,14 @@ def vote_story():
         x, y = 0, 0
 
         for msg in message_board.get_messages():
+            message_string = msg['message']
             draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
             x = char_width*6
             draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
             x = 0
             y += char_height
-            draw_rotated_text(disp.buffer, msg['message'], (x, y), 0, font, fill=(255,255,255))
-            y += char_height * 4
+            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
+            y += char_height * get_message_line_count(message_string)
 
         disp.display()
 

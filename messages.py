@@ -33,6 +33,10 @@ class Messages:
         return res
 
 
+def get_message_line_count(message: str):
+    return len(message.split("\n"))
+
+
 if __name__ == "__main__":
     initial_messages = [
                 {"from": "Santa", "message": "HO HO HO"},
