@@ -33,7 +33,7 @@ disp.clear((0, 0, 0))
 SCREEN_WIDTH, SCREEN_HEIGHT = disp.width, disp.height
 
 # Load your font
-font = ImageFont.truetype('monocraft.ttf', 18)
+font = ImageFont.truetype('fonts/monocraft.ttf', 18)
 
 # Measure the widest character (usually “W”)
 tmp_img = Image.new("RGB", (100, 100))
