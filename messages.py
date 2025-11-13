@@ -19,7 +19,7 @@ class Messages:
         return out
 
     def get_messages(self):
-        return self._messages
+        return {k: self.crop_message(v) for k, v in self._messages.items()}
 
     def crop_message(self, message: str) -> str:
         cropped_message = message[:self._max_chars_per_message]
