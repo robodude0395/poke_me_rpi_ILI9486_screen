@@ -18,6 +18,9 @@ class Messages:
             out += f"from: {m["from"]}\n{self.crop_message(m["message"])}"
         return out
 
+    def get_messages(self):
+        return self._messages
+
     def crop_message(self, message: str) -> str:
         cropped_message = message[:self._max_chars_per_message]
         separator = "\n"
