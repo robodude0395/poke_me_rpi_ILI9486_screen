@@ -6,7 +6,7 @@ luma.core==2.5.2
 luma.lcd==2.11.0
 numpy==2.3.4
 pillow==12.0.0
-Python_ILI9486 @ file:///home/ubuntu/poke_me_device/Python_ILI9486_Adafruit
+Python_ILI9486 @ file://{PATH_TO_REPO}/Python_ILI9486_Adafruit
 rpi-lgpio==0.6
 RPi.GPIO==0.7.1
 setuptools==80.9.0
