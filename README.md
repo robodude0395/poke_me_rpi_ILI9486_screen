@@ -38,7 +38,6 @@ with a payload of:
 
 Please note that there's a 78 character limit on your message. Anything bigger than that just gets cropped.
 
+If the message payload does not have "from" and "message" with correct format (should go without saying), the request will get rejected.
+
 Likewise the name has a 21 character limit. It won't get rejected but it WILL get cropped and not show through the whole screen (...bummer).
-
-
-
