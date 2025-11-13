@@ -13,7 +13,7 @@ app = Flask(__name__)
 message_board = Messages()
 
 #Tailscale IP
-RUNNING_IP = 100.88.199.91
+RUNNING_IP = "100.88.199.91"
 
 # Raspberry Pi configuration.
 DC = 24
