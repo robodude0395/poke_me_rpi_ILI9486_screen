@@ -103,10 +103,13 @@ def vote_story():
         x, y = 0, 0
 
         for msg in message_board.get_messages():
-            draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 0, font, fill=(255,255,0))
+            draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
+            x = char_width*6
+            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
+            x = 0
             y += char_height
             draw_rotated_text(disp.buffer, msg['message'], (x, y), 0, font, fill=(255,255,255))
-            y += char_height + 5
+            y += char_height * 4
 
         # Write two lines of white text on the buffer, rotated 90 degrees counter clockwise.
         draw_rotated_text(disp.buffer, message_board.get_messages_string(), (0, 0), 0, font, fill=(255,255,255))
