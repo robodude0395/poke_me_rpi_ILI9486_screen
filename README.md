@@ -11,7 +11,7 @@ In essence this is a code repo for an rpi to get a message over the internet and
 
 This is the device!
 
-![poke-me-tron-9000](images/poke_me_tron_9000.jpg)
+![poke-me-tron-9000](images/poke_me_tron_9000_v2.jpg)
 
 Not much else to it (for now). You can also run a GET on:
 ```
