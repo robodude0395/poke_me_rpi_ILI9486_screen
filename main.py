@@ -12,6 +12,9 @@ app = Flask(__name__)
 
 message_board = Messages()
 
+#Tailscale IP
+RUNNING_IP = 100.88.199.91
+
 # Raspberry Pi configuration.
 DC = 24
 RST = 25
@@ -120,4 +123,4 @@ if __name__ == "__main__":
     disp.clear((0, 0, 0))
     app.config['TESTING'] = True
     app.config['DEBUG'] = True
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host=RUNNING_IP, port=5000)
