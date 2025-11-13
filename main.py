@@ -115,7 +115,7 @@ def post_message():
             x = char_width*6
             draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
             x = 0
-            y += char_height
+            y += char_height + 3
             draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
             y += char_height * get_message_line_count(message_string)
 
