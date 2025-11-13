@@ -10,6 +10,7 @@ class Messages:
         if len(self._messages) >= self._max_messages:
             self._messages.pop(-1)
 
+        message["message"] = self.crop_message(message["message"])
         self._messages.insert(0, message)
 
     def get_messages_string(self):
@@ -19,7 +20,7 @@ class Messages:
         return out
 
     def get_messages(self):
-        return {k: self.crop_message(v) for k, v in self._messages.items()}
+        return self._messages
 
     def crop_message(self, message: str) -> str:
         cropped_message = message[:self._max_chars_per_message]
