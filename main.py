@@ -92,8 +92,12 @@ def validate_data(data: dict):
     return {"error": True, "message": "Invalid message content"}, 403
 
 
-@app.route("/messages", methods=["POST"])
-def vote_story():
+@app.get("/messages")
+def get_message():
+    return message_board.get_messages()
+
+@app.post("/messages")
+def post_message():
     data = request.json
 
     data, status_code = validate_data(data)
