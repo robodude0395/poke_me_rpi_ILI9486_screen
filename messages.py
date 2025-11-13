@@ -1,7 +1,10 @@
 class Messages:
-    def __init__(self, messages: list[dict]):
-        self._max_messages = 3
+    def __init__(self, messages: list[dict], max_chars_per_line: int = 26):
+        self._max_messages = 8
+        self._max_lines_per_message = 3
         self._messages = messages[0:self._max_messages]
+        self._max_chars_per_line = max_chars_per_line
+        self._max_chars_per_message = self._max_chars_per_line * self._max_lines_per_message
 
     def push_message(self, message: dict):
         if len(self._messages) >= self._max_messages:
@@ -12,8 +15,19 @@ class Messages:
     def get_messages_string(self):
         out = ""
         for m in self._messages:
-            out += f"from: {m["from"]}:\n{m["message"]}\n\n"
+            out += f"from: {m["from"]}\n{self.crop_message(m["message"])}"
         return out
+
+    def crop_message(self, message: str) -> str:
+        cropped_message = message[:self._max_chars_per_message]
+        separator = "\n"
+        res = ""
+        for i in range(0, len(cropped_message), self._max_chars_per_line):
+            res += cropped_message[i:i + self._max_chars_per_line] + separator
+
+        res += "\n"
+        return res
+
 
 if __name__ == "__main__":
     initial_messages = [
@@ -33,7 +47,7 @@ if __name__ == "__main__":
     print("-"*20)
     print(message_board.get_messages_string())
 
-    message_board.push_message({"from": "Luke", "message": "NOOOOOOO!"})
+    message_board.push_message({"from": "Luke", "message": f"N{"O"*53}!"})
 
     print("-"*20)
     print(message_board.get_messages_string())
