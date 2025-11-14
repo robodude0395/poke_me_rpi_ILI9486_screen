@@ -1,6 +1,6 @@
 class Messages:
     def __init__(self, messages: list[dict] = [], max_chars_per_line: int = 26):
-        self._max_messages = 5
+        self._max_messages = 25
         self._max_lines_per_message = 3
         self._messages = messages[0:self._max_messages]
         self._max_chars_per_line = max_chars_per_line
