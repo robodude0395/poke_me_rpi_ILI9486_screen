@@ -16,7 +16,7 @@ class Messages:
             self._messages.pop(-1)
 
         message["message"] = self.crop_message(message["message"])
-        self._messages.insert(0, message)
+        self._messages.create(message)
 
     def get_messages_string(self):
         out = ""
