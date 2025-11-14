@@ -2,7 +2,7 @@ from json_database import JSONDatabase
 
 
 class Messages:
-    def __init__(self, messages=None, max_chars_per_line: int = 26):
+    def __init__(self, messages=None, json_path="", max_chars_per_line: int = 26):
         if messages is None:
             messages = []
 
@@ -12,7 +12,10 @@ class Messages:
         self._max_chars_per_message = self._max_chars_per_line * self._max_lines_per_message
 
         # Use an in-memory override so JSONDatabase behaves like a list
-        self._messages = JSONDatabase(dictionary_override=[])
+        if json_path == "":
+            self._messages = JSONDatabase(dictionary_override=[])
+        else:
+            self._messages = JSONDatabase(json_path)
 
         for m in messages:
             self._messages.create(m)

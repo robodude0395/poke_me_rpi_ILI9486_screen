@@ -10,7 +10,7 @@ from messages import Messages, get_message_line_count
 
 app = Flask(__name__)
 
-message_board = Messages()
+message_board = Messages(json_path="messages.json")
 
 #RUNNING IP
 RUNNING_IP = "0.0.0.0"
