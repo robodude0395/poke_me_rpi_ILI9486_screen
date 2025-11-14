@@ -124,6 +124,7 @@ def post_message():
     return data, 200
 
 if __name__ == "__main__":
+    x, y = 0, 0
     for msg in message_board.get_messages():
             message_string = msg['message']
             draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
