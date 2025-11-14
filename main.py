@@ -124,6 +124,16 @@ def post_message():
     return data, 200
 
 if __name__ == "__main__":
+    for msg in message_board.get_messages():
+            message_string = msg['message']
+            draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
+            x = char_width*6
+            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
+            x = 0
+            y += char_height + 3
+            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
+            y += char_height * get_message_line_count(message_string)
+
     disp.clear((0, 0, 0))
     disp.display()
     app.config['TESTING'] = False
