@@ -12,7 +12,7 @@ class Messages:
         self._max_chars_per_message = self._max_chars_per_line * self._max_lines_per_message
 
     def push_message(self, message: dict):
-        if len(self._messages) >= self._max_messages:
+        if len(self.get_messages()) >= self._max_messages:
             self._messages.pop(-1)
 
         message["message"] = self.crop_message(message["message"])
