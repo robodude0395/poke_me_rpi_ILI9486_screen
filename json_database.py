@@ -49,10 +49,6 @@ class JSONDatabase:
         if not all([k in record for k in self.REQUIRED_KEYS]):
             raise KeyError("Record is missing details!")
 
-        for story in self.read_all():
-            if story["id"] == record["id"]:
-                raise Exception("Record already exists!")
-
         data = self._load()
         data.append(record.copy())  # ← FIX
         self._save(data)
