@@ -27,13 +27,17 @@ class Messages:
         all_msgs = self.get_messages()
 
         # Remove oldest if over capacity
+        # Now that new messages go at index 0, the LAST message is the oldest
         if len(all_msgs) >= self._max_messages:
-            all_msgs.pop(0)  # remove the FIRST message (oldest)
+            all_msgs.pop(-1)  # remove LAST (oldest)
 
         # Crop text
         message["message"] = self.crop_message(message["message"])
 
-        all_msgs.append(message.copy())
+        # PREPEND new message
+        all_msgs.insert(0, message.copy())
+
+        # Save new list
         self._messages._save(all_msgs)
 
     # -------------------------------------------------------------
