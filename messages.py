@@ -1,8 +1,13 @@
+from json_database import JSONDatabase
+
 class Messages:
     def __init__(self, messages: list[dict] = [], max_chars_per_line: int = 26):
         self._max_messages = 25
         self._max_lines_per_message = 3
-        self._messages = messages[0:self._max_messages]
+        self._messages = JSONDatabase("messages.json")
+        for m in messages:
+            self._messages.create(m)
+
         self._max_chars_per_line = max_chars_per_line
         self._max_chars_per_message = self._max_chars_per_line * self._max_lines_per_message
 
@@ -15,12 +20,12 @@ class Messages:
 
     def get_messages_string(self):
         out = ""
-        for m in self._messages:
+        for m in self._messages.read_all():
             out += f"from: {m["from"]}\n{self.crop_message(m["message"])}"
         return out
 
     def get_messages(self):
-        return self._messages
+        return self._messages.read_all()
 
     def crop_message(self, message: str) -> str:
         cropped_message = message[:self._max_chars_per_message]
