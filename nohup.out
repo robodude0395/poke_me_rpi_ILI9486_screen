@@ -1,0 +1,33 @@
+Max chars per line: 26, lines per screen: 34
+ * Serving Flask app 'main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.31:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 659-909-385
+Max chars per line: 26, lines per screen: 34
+Traceback (most recent call last):
+  File "/home/ubuntu/poke_me_device/main.py", line 1, in <module>
+    from flask import Flask, current_app, request
+  File "/home/ubuntu/poke_me_device/.venv/lib/python3.13/site-packages/flask/__init__.py", line 5, in <module>
+    from . import json as json
+  File "/home/ubuntu/poke_me_device/.venv/lib/python3.13/site-packages/flask/json/__init__.py", line 6, in <module>
+    from ..globals import current_app
+  File "/home/ubuntu/poke_me_device/.venv/lib/python3.13/site-packages/flask/globals.py", line 6, in <module>
+    from werkzeug.local import LocalProxy
+  File "/home/ubuntu/poke_me_device/.venv/lib/python3.13/site-packages/werkzeug/__init__.py", line 1, in <module>
+    from .serving import run_simple as run_simple
+  File "/home/ubuntu/poke_me_device/.venv/lib/python3.13/site-packages/werkzeug/serving.py", line 28, in <module>
+    from http.server import BaseHTTPRequestHandler
+  File "/usr/lib/python3.13/http/server.py", line 94, in <module>
+    import http.client
+  File "/usr/lib/python3.13/http/client.py", line 1450, in <module>
+    import ssl
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1322, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 1256, in _find_spec
+KeyboardInterrupt
