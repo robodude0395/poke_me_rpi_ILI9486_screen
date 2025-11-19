@@ -62,7 +62,7 @@ def get_message():
     pass
 
 
-@app.post("/messages")
+@app.post("/")
 def post_message():
     data = request.json
 
