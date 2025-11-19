@@ -12,7 +12,9 @@ app = Flask(__name__)
 
 message_board = Messages(json_path="messages.json")
 
-#RUNNING IP
+# IMAGE DISPLAY BRANCH
+
+# RUNNING IP
 RUNNING_IP = "0.0.0.0"
 
 # Raspberry Pi configuration.
@@ -21,12 +23,13 @@ RST = 25
 SPI_PORT = 0
 SPI_DEVICE = 0
 
-#Screen config
+# Screen config
 MAX_CHAR_WIDTH = 18
 MAX_CHAR_HEIGHT = 25
 
 # Create TFT LCD display class.
-disp = TFT.ILI9486(DC, rst=RST, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=64000000))
+disp = TFT.ILI9486(DC, rst=RST, spi=SPI.SpiDev(
+    SPI_PORT, SPI_DEVICE, max_speed_hz=64000000))
 
 # Initialize display
 disp.begin()
@@ -49,11 +52,14 @@ char_height = bbox[3] - bbox[1]
 MAX_CHAR_WIDTH = SCREEN_WIDTH // char_width
 MAX_CHAR_HEIGHT = SCREEN_HEIGHT // char_height
 
-print(f"Max chars per line: {MAX_CHAR_WIDTH}, lines per screen: {MAX_CHAR_HEIGHT}")
+print(
+    f"Max chars per line: {MAX_CHAR_WIDTH}, lines per screen: {MAX_CHAR_HEIGHT}")
 
 # Define a function to create rotated text.  Unfortunately PIL doesn't have good
 # native support for rotated fonts, but this function can be used to make a
 # text image and rotate it so it's easy to paste in the buffer.
+
+
 def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255)):
     """
     Draw rotated text onto an image without clipping descenders.
@@ -77,13 +83,15 @@ def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255)):
     text_draw = ImageDraw.Draw(text_img)
 
     # Draw text centered with padding
-    text_draw.text((pad_x - bbox[0], pad_y - bbox[1]), text, font=font, fill=fill)
+    text_draw.text((pad_x - bbox[0], pad_y - bbox[1]),
+                   text, font=font, fill=fill)
 
     # Rotate text
     rotated = text_img.rotate(angle, expand=True)
 
     # Paste into main image (mask keeps transparency)
     image.paste(rotated, position, rotated)
+
 
 def validate_data(data: dict):
     if isinstance(data, dict) and all([isinstance(v, str) for v in data.values()]) and "from" in data and "message" in data:
@@ -96,6 +104,7 @@ def validate_data(data: dict):
 def get_message():
     return message_board.get_messages()
 
+
 @app.post("/messages")
 def post_message():
     data = request.json
@@ -103,7 +112,7 @@ def post_message():
     data, status_code = validate_data(data)
 
     if status_code == 200:
-        #print update and display message board
+        # print update and display message board
         message_board.push_message(data)
         disp.clear((0, 0, 0))
 
@@ -111,30 +120,37 @@ def post_message():
 
         for msg in message_board.get_messages():
             message_string = msg['message']
-            draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
+            draw_rotated_text(disp.buffer, f"From:", (x, y),
+                              0, font, fill=(255, 255, 0))
             x = char_width*6
-            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
+            draw_rotated_text(
+                disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255, 255, 255))
             x = 0
             y += char_height + 3
-            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
+            draw_rotated_text(disp.buffer, message_string,
+                              (x, y), 0, font, fill=(255, 255, 255))
             y += char_height * get_message_line_count(message_string)
 
         disp.display()
 
     return data, 200
 
+
 if __name__ == "__main__":
     disp.clear((0, 0, 0))
     x, y = 0, 0
     for msg in message_board.get_messages():
-            message_string = msg['message']
-            draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
-            x = char_width*6
-            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
-            x = 0
-            y += char_height + 3
-            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
-            y += char_height * get_message_line_count(message_string)
+        message_string = msg['message']
+        draw_rotated_text(disp.buffer, f"From:", (x, y),
+                          0, font, fill=(255, 255, 0))
+        x = char_width*6
+        draw_rotated_text(
+            disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255, 255, 255))
+        x = 0
+        y += char_height + 3
+        draw_rotated_text(disp.buffer, message_string,
+                          (x, y), 0, font, fill=(255, 255, 255))
+        y += char_height * get_message_line_count(message_string)
     disp.display()
     app.config['TESTING'] = False
     app.config['DEBUG'] = False
