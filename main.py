@@ -9,6 +9,8 @@ import Adafruit_GPIO.SPI as SPI
 from requests import get
 from io import BytesIO
 from PIL import Image
+from webscraper import get_links_for_images
+import time
 
 app = Flask(__name__)
 
@@ -58,6 +60,20 @@ print(
 # text image and rotate it so it's easy to paste in the buffer.
 
 
+def print_image_to_display_from_url(url: str):
+    if url is not None:
+        response = get(url)
+        response.raise_for_status()   # Always good practice
+
+        new_size = (320, 480)
+        image = Image.open(BytesIO(response.content)).resize(
+            new_size, Image.LANCZOS)
+
+        disp.display(image)
+
+    return {"message": "Okie dokie"}, 200
+
+
 @app.get("/")
 def get_message():
     pass
@@ -69,15 +85,14 @@ def post_message():
 
     url = data.get("url", None)
 
-    if url is not None:
-        response = get(url)
-        response.raise_for_status()   # Always good practice
+    if url is None:
+        return {"message": "URL error"}, 400
 
-        new_size = (320, 480)
-        image = Image.open(BytesIO(response.content)).resize(
-            new_size, Image.LANCZOS)
+    image_links = get_links_for_images(url)
 
-        disp.display(image)
+    for u in image_links:
+        print_image_to_display_from_url(u)
+        time.sleep(0.5)
 
     return data, 200
 
