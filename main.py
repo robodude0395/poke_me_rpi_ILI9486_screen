@@ -8,6 +8,7 @@ import Adafruit_GPIO as GPIO
 import Adafruit_GPIO.SPI as SPI
 from requests import get
 from io import BytesIO
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -66,9 +67,17 @@ def get_message():
 def post_message():
     data = request.json
 
-    print(data)
+    url = data.get("url", None)
 
-    disp.display()
+    if url is not None:
+        response = get(url)
+        response.raise_for_status()   # Always good practice
+
+        new_size = (320, 480)
+        image = Image.open(BytesIO(response.content)).resize(
+            new_size, Image.LANCZOS)
+
+        disp.display(image)
 
     return data, 200
 
