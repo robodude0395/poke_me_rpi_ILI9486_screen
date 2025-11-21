@@ -71,7 +71,7 @@ def print_image_to_display_from_url(url: str):
         width, height = image.size
         if width > height:
             # Landscape: rotate so the long edge is horizontal
-            image = image.rotate(90, expand=True)
+            image = image.rotate(270, expand=True)
 
         # Resize after rotation
         new_size = (320, 480)
