@@ -63,11 +63,19 @@ print(
 def print_image_to_display_from_url(url: str):
     if url is not None:
         response = get(url)
-        response.raise_for_status()   # Always good practice
+        response.raise_for_status()
 
+        image = Image.open(BytesIO(response.content))
+
+        # Check orientation
+        width, height = image.size
+        if width > height:
+            # Landscape: rotate so the long edge is horizontal
+            image = image.rotate(90, expand=True)
+
+        # Resize after rotation
         new_size = (320, 480)
-        image = Image.open(BytesIO(response.content)).resize(
-            new_size, Image.LANCZOS)
+        image = image.resize(new_size, Image.LANCZOS)
 
         disp.display(image)
 
