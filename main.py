@@ -87,7 +87,6 @@ if __name__ == "__main__":
     for f in frames:
         disp.set_window()
         disp.data(f)
-        time.sleep(0.01)
 
     # disp.clear((0, 0, 0))
     # disp.display()
