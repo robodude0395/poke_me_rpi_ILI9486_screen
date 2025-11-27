@@ -17,13 +17,13 @@ def load_gif_frames_for_display(display, path: str,
 
     try:
         reader = imageio.get_reader(path)
-        print("ASS")
     except FileNotFoundError:
         raise FileNotFoundError(f"GIF not found: {path}")
 
     frames = []
 
     for frame in reader:
+        print("ASS")
         # frame arrives as a numpy array → convert to Pillow Image
         img = Image.fromarray(frame).convert("RGB")
 
