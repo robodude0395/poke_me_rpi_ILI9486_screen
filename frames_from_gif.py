@@ -16,8 +16,8 @@ def load_gif_frames_for_display(display, path: str,
     """
 
     try:
-        print("ASS")
         reader = imageio.get_reader(path)
+        print("ASS")
     except FileNotFoundError:
         raise FileNotFoundError(f"GIF not found: {path}")
 
