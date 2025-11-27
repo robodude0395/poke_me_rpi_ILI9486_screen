@@ -82,8 +82,14 @@ def post_message():
 
 
 if __name__ == "__main__":
-    disp.clear((0, 0, 0))
-    disp.display()
-    app.config['TESTING'] = False
-    app.config['DEBUG'] = False
-    app.run(debug=True, host=RUNNING_IP, port=5000)
+    frames = load_gif_frames_for_display("./feddy.gif")
+
+    for f in frames:
+        disp.send(f)
+        time.sleep(0.01)
+
+    # disp.clear((0, 0, 0))
+    # disp.display()
+    # app.config['TESTING'] = False
+    # app.config['DEBUG'] = False
+    # app.run(debug=True, host=RUNNING_IP, port=5000)
