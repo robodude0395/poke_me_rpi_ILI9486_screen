@@ -2,7 +2,7 @@ from typing import List
 import imageio.v2 as imageio
 from PIL import Image
 
-from ILI9486.Python_ILI9486.ILI9486 import image_to_data
+from Python_ILI9486 import image_to_data
 
 
 def load_gif_frames_for_display(path: str,

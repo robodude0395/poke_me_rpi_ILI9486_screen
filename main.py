@@ -82,7 +82,7 @@ def post_message():
 
 
 if __name__ == "__main__":
-    frames = load_gif_frames_for_display("./feddy.gif")
+    frames = load_gif_frames_for_display("feddy.gif")
 
     for f in frames:
         disp.send(f)
