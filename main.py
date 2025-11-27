@@ -74,7 +74,7 @@ def post_message():
     if url is None:
         return {"message": "URL error"}, 400
 
-    frames = load_gif_frames_for_display("./feddy.gif")
+    frames = load_gif_frames_for_display("feddy.gif")
 
     for f in frames:
         disp.send(f)
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     frames = load_gif_frames_for_display(path="feddy.gif")
 
     for f in frames:
-        disp.send(f)
+        disp.data(f)
         time.sleep(0.01)
 
     # disp.clear((0, 0, 0))
