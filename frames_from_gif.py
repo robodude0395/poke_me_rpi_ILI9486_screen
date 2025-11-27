@@ -18,13 +18,13 @@ def load_gif_frames_for_display(path: str, size=(320, 480)) -> List[list]:
     try:
         # Iterate over all frames
         for frame in ImageSequence.Iterator(img):
-            frame_rgb = frame_rgb.rotate(270, expand=True)
             frame_rgb = frame.convert("RGB").resize(size, Image.LANCZOS)
+            frame_rgb = frame_rgb.rotate(270, expand=True)
             frames_bytes.append(list(image_to_data(frame_rgb)))
     except Exception:
         # If single frame GIF or error, fallback to one frame
-        frame_rgb = frame_rgb.rotate(270, expand=True)
         frame_rgb = img.convert("RGB").resize(size, Image.LANCZOS)
+        frame_rgb = frame_rgb.rotate(270, expand=True)
         frames_bytes.append(list(image_to_data(frame_rgb)))
 
     return frames_bytes
