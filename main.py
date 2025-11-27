@@ -83,7 +83,7 @@ def post_message():
 
 if __name__ == "__main__":
     frames = load_gif_frames_for_display(path="feddy.gif")
-
+    disp.set_window()
     disp.data(frames[0])
 
     # disp.clear((0, 0, 0))
