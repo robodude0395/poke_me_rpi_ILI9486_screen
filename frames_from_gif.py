@@ -23,9 +23,9 @@ def load_gif_frames_for_display(display, path: str,
     frames = []
 
     for frame in reader:
+        print("ASS")
         # frame arrives as a numpy array → convert to Pillow Image
         img = Image.fromarray(frame).convert("RGB")
-        print("ASS")
 
         # Resize for your display
         img = img.resize(size, Image.LANCZOS)
