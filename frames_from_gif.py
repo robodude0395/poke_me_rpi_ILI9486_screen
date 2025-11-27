@@ -1,11 +1,10 @@
 from typing import List
 import imageio.v2 as imageio
 from PIL import Image
+from ILI9486.build.lib.Python_ILI9486.ILI9486 import image_to_data
 
-from Python_ILI9486 import image_to_data
 
-
-def load_gif_frames_for_display(path: str,
+def load_gif_frames_for_display(display, path: str,
                                 size=(320, 480)) -> List[list]:
     """
     Load a GIF from disk using imageio (safer on Raspberry Pi),
@@ -26,6 +25,7 @@ def load_gif_frames_for_display(path: str,
     for frame in reader:
         # frame arrives as a numpy array → convert to Pillow Image
         img = Image.fromarray(frame).convert("RGB")
+        print("ASS")
 
         # Resize for your display
         img = img.resize(size, Image.LANCZOS)
