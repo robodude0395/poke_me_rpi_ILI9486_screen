@@ -12,6 +12,7 @@ from io import BytesIO
 from PIL import Image
 from webscraper import get_links_for_images
 import time
+from evdev import InputDevice, categorize, ecodes
 
 app = Flask(__name__)
 
@@ -122,26 +123,49 @@ def previous_image():
             display_current_image()
 
 
+def find_keyboard_device():
+    """Find the keyboard input device."""
+    import evdev
+    devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+    for device in devices:
+        if 'keyboard' in device.name.lower() or 'keys' in device.name.lower():
+            print(f"Found keyboard: {device.name} at {device.path}")
+            return device.path
+    # Fallback to first event device
+    if devices:
+        print(f"Using default device: {devices[0].name} at {devices[0].path}")
+        return devices[0].path
+    return None
+
+
 def keyboard_listener():
-    """Listen for keyboard input to control the carousel."""
+    """Listen for physical keyboard input to control the carousel."""
     print("\n=== Carousel Controls ===")
     print("Press Enter: Next image")
-    print("Press 'q' + Enter: Quit listener\n")
+    print("Waiting for keyboard input...\n")
 
-    while True:
-        try:
-            user_input = input()
+    try:
+        device_path = find_keyboard_device()
+        if not device_path:
+            print("No keyboard device found!")
+            return
 
-            if user_input.lower() == 'q':
-                print("Exiting keyboard listener...")
-                break
-            else:
-                # Enter key (empty input) cycles to next image
-                next_image()
-        except EOFError:
-            break
-        except KeyboardInterrupt:
-            break
+        device = InputDevice(device_path)
+        print(f"Listening to: {device.name}")
+
+        for event in device.read_loop():
+            if event.type == ecodes.EV_KEY:
+                key_event = categorize(event)
+                # Check for Enter key press (not release)
+                if key_event.keycode == 'KEY_ENTER' and key_event.keystate == 1:
+                    print("Enter key pressed - advancing to next image")
+                    next_image()
+
+    except PermissionError:
+        print("Permission denied! Run with sudo or add user to 'input' group:")
+        print("  sudo usermod -a -G input $USER")
+    except Exception as e:
+        print(f"Keyboard listener error: {e}")
 
 
 @app.get("/")
