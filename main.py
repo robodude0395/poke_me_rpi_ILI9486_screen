@@ -12,7 +12,7 @@ from io import BytesIO
 from PIL import Image
 from webscraper import get_links_for_images
 import time
-from evdev import InputDevice, categorize, ecodes
+import keyboard
 
 app = Flask(__name__)
 
@@ -123,59 +123,31 @@ def previous_image():
             display_current_image()
 
 
-def find_keyboard_device():
-    """Find the keyboard input device."""
-    import evdev
-    devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
-    for device in devices:
-        if 'keyboard' in device.name.lower() or 'keys' in device.name.lower():
-            print(f"Found keyboard: {device.name} at {device.path}")
-            return device.path
-    # Fallback to first event device
-    if devices:
-        print(f"Using default device: {devices[0].name} at {devices[0].path}")
-        return devices[0].path
-    return None
+def on_enter_press(e):
+    """Callback when Enter key is pressed."""
+    print("Enter key detected!")
+    next_image()
 
 
 def keyboard_listener():
     """Listen for physical keyboard input to control the carousel."""
     print("\n=== Carousel Controls ===")
     print("Press Enter: Next image")
-    print("Waiting for keyboard input...\n")
+    print("Keyboard listener started...\n")
 
     try:
-        device_path = find_keyboard_device()
-        if not device_path:
-            print("No keyboard device found!")
-            return
+        # Hook the enter key
+        keyboard.on_press_key('enter', on_enter_press)
 
-        device = InputDevice(device_path)
-        print(f"Listening to: {device.name}")
-        print(f"Device path: {device.path}")
-        print(f"Device capabilities: {device.capabilities()}")
+        # Keep the thread alive
+        while True:
+            time.sleep(0.1)
 
-        # Don't grab - just listen passively
-        print("Listening for events...")
-
-        for event in device.read_loop():
-            print(f"!!! EVENT DETECTED !!! type={event.type}, code={event.code}, value={event.value}")
-
-            if event.type == ecodes.EV_KEY:
-                key_event = categorize(event)
-                print(f"!!! KEY EVENT !!! {key_event.keycode}, state={key_event.keystate}")
-
-                if key_event.keystate == 1:  # Key press
-                    print(f"Key pressed: {key_event.keycode}")
-                    next_image()
-
-    except PermissionError:
-        print("Permission denied! Run with sudo or add user to 'input' group:")
-        print("  sudo usermod -a -G input $USER")
     except Exception as e:
         print(f"Keyboard listener error: {e}")
         import traceback
         traceback.print_exc()
+
 
 @app.get("/")
 def get_message():

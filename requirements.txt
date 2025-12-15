@@ -4,4 +4,4 @@ beautifulsoup4
 requests
 Adafruit_GPIO
 spidev
-evdev
+keyboard
