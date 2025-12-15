@@ -155,9 +155,8 @@ def keyboard_listener():
         print(f"Device path: {device.path}")
         print(f"Device capabilities: {device.capabilities()}")
 
-        # Use grab to get exclusive access
-        device.grab()
-        print("Device grabbed - listening for events...")
+        # Don't grab - just listen passively
+        print("Listening for events...")
 
         for event in device.read_loop():
             print(f"!!! EVENT DETECTED !!! type={event.type}, code={event.code}, value={event.value}")
