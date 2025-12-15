@@ -95,12 +95,10 @@ def load_image_from_url(url: str):
 
 def display_current_image():
     """Display the current carousel image on the screen."""
-    global current_index
-
-    with carousel_lock:
-        if carousel_images and 0 <= current_index < len(carousel_images):
-            disp.display(carousel_images[current_index])
-            print(f"Displaying image {current_index + 1}/{len(carousel_images)}")
+    # Assumes lock is already held by caller
+    if carousel_images and 0 <= current_index < len(carousel_images):
+        disp.display(carousel_images[current_index])
+        print(f"Displaying image {current_index + 1}/{len(carousel_images)}")
 
 
 def next_image():
@@ -110,8 +108,8 @@ def next_image():
     with carousel_lock:
         if carousel_images:
             current_index = (current_index + 1) % len(carousel_images)
-            print(current_index)
-            display_current_image()
+            print(f"Advanced to index: {current_index}")
+            display_current_image()  # Now safe to call since we hold the lock
 
 
 def previous_image():
@@ -121,6 +119,7 @@ def previous_image():
     with carousel_lock:
         if carousel_images:
             current_index = (current_index - 1) % len(carousel_images)
+            print(f"Went back to index: {current_index}")
             display_current_image()
 
 
