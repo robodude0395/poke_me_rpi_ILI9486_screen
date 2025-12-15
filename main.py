@@ -110,6 +110,7 @@ def next_image():
     with carousel_lock:
         if carousel_images:
             current_index = (current_index + 1) % len(carousel_images)
+            print(current_index)
             display_current_image()
 
 
