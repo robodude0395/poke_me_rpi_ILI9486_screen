@@ -152,15 +152,21 @@ def keyboard_listener():
 
         device = InputDevice(device_path)
         print(f"Listening to: {device.name}")
+        print(f"Device capabilities: {device.capabilities(verbose=True)}")
 
         for event in device.read_loop():
+            # Debug: print all events
+            print(f"Event: type={event.type}, code={event.code}, value={event.value}")
+
             if event.type == ecodes.EV_KEY:
                 key_event = categorize(event)
-                print(key_event.keycode)
-                # Check for Enter key press (not release)
-                if key_event.keycode == 'KEY_ENTER' and key_event.keystate == 1:
-                    print("Enter key pressed - advancing to next image")
-                    next_image()
+                print(f"Key event: {key_event.keycode}, state={key_event.keystate}")
+
+                # Check for Enter key press (keystate 1 = press, 0 = release, 2 = hold)
+                if key_event.keystate == 1:  # Any key press
+                    if key_event.keycode == 'KEY_ENTER' or key_event.keycode == 'KEY_KPENTER':
+                        print("Enter key pressed - advancing to next image")
+                        next_image()
 
     except PermissionError:
         print("Permission denied! Run with sudo or add user to 'input' group:")
