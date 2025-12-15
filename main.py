@@ -152,28 +152,31 @@ def keyboard_listener():
 
         device = InputDevice(device_path)
         print(f"Listening to: {device.name}")
-        print(f"Device capabilities: {device.capabilities(verbose=True)}")
+        print(f"Device path: {device.path}")
+        print(f"Device capabilities: {device.capabilities()}")
+
+        # Use grab to get exclusive access
+        device.grab()
+        print("Device grabbed - listening for events...")
 
         for event in device.read_loop():
-            # Debug: print all events
-            print(f"Event: type={event.type}, code={event.code}, value={event.value}")
+            print(f"!!! EVENT DETECTED !!! type={event.type}, code={event.code}, value={event.value}")
 
             if event.type == ecodes.EV_KEY:
                 key_event = categorize(event)
-                print(f"Key event: {key_event.keycode}, state={key_event.keystate}")
+                print(f"!!! KEY EVENT !!! {key_event.keycode}, state={key_event.keystate}")
 
-                # Check for Enter key press (keystate 1 = press, 0 = release, 2 = hold)
-                if key_event.keystate == 1:  # Any key press
-                    if key_event.keycode == 'KEY_ENTER' or key_event.keycode == 'KEY_KPENTER':
-                        print("Enter key pressed - advancing to next image")
-                        next_image()
+                if key_event.keystate == 1:  # Key press
+                    print(f"Key pressed: {key_event.keycode}")
+                    next_image()
 
     except PermissionError:
         print("Permission denied! Run with sudo or add user to 'input' group:")
         print("  sudo usermod -a -G input $USER")
     except Exception as e:
         print(f"Keyboard listener error: {e}")
-
+        import traceback
+        traceback.print_exc()
 
 @app.get("/")
 def get_message():
