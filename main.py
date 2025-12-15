@@ -156,6 +156,7 @@ def keyboard_listener():
         for event in device.read_loop():
             if event.type == ecodes.EV_KEY:
                 key_event = categorize(event)
+                print(key_event.keycode)
                 # Check for Enter key press (not release)
                 if key_event.keycode == 'KEY_ENTER' and key_event.keystate == 1:
                     print("Enter key pressed - advancing to next image")
