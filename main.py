@@ -42,7 +42,7 @@ SCREEN_WIDTH, SCREEN_HEIGHT = disp.width, disp.height
 # Load your font
 font = ImageFont.truetype('fonts/monocraft.ttf', 18)
 
-# Measure the widest character (usually “W”)
+# Measure the widest character (usually "W")
 tmp_img = Image.new("RGB", (100, 100))
 tmp_draw = ImageDraw.Draw(tmp_img)
 bbox = tmp_draw.textbbox((0, 0), "W", font=font)
@@ -65,35 +65,100 @@ carousel_images = []  # List of PIL Image objects
 current_index = 0
 carousel_lock = threading.Lock()
 
-def print_image_to_display_from_url(url: str):
+
+def load_image_from_url(url: str):
+    """Load and prepare an image from URL, returns PIL Image object."""
     if url is not None:
-        response = get(url)
-        response.raise_for_status()
+        try:
+            response = get(url)
+            response.raise_for_status()
 
-        image = Image.open(BytesIO(response.content))
+            image = Image.open(BytesIO(response.content))
 
-        # Check orientation
-        width, height = image.size
-        if width > height:
-            # Landscape: rotate so the long edge is horizontal
-            image = image.rotate(270, expand=True)
+            # Check orientation
+            width, height = image.size
+            if width > height:
+                # Landscape: rotate so the long edge is horizontal
+                image = image.rotate(270, expand=True)
 
-        # Resize after rotation
-        new_size = (320, 480)
-        image = image.resize(new_size, Image.LANCZOS)
+            # Resize after rotation
+            new_size = (320, 480)
+            image = image.resize(new_size, Image.LANCZOS)
 
-        disp.display(image)
+            return image
+        except Exception as e:
+            print(f"Error loading image from {url}: {e}")
+            return None
+    return None
 
-    return {"message": "Okie dokie"}, 200
+
+def display_current_image():
+    """Display the current carousel image on the screen."""
+    global current_index
+
+    with carousel_lock:
+        if carousel_images and 0 <= current_index < len(carousel_images):
+            disp.display(carousel_images[current_index])
+            print(f"Displaying image {current_index + 1}/{len(carousel_images)}")
+
+
+def next_image():
+    """Move to the next image in the carousel."""
+    global current_index
+
+    with carousel_lock:
+        if carousel_images:
+            current_index = (current_index + 1) % len(carousel_images)
+            display_current_image()
+
+
+def previous_image():
+    """Move to the previous image in the carousel."""
+    global current_index
+
+    with carousel_lock:
+        if carousel_images:
+            current_index = (current_index - 1) % len(carousel_images)
+            display_current_image()
+
+
+def keyboard_listener():
+    """Listen for keyboard input to control the carousel."""
+    print("\n=== Carousel Controls ===")
+    print("Press Enter: Next image")
+    print("Press 'q' + Enter: Quit listener\n")
+
+    while True:
+        try:
+            user_input = input()
+
+            if user_input.lower() == 'q':
+                print("Exiting keyboard listener...")
+                break
+            else:
+                # Enter key (empty input) cycles to next image
+                next_image()
+        except EOFError:
+            break
+        except KeyboardInterrupt:
+            break
 
 
 @app.get("/")
 def get_message():
-    pass
+    """Get carousel status."""
+    with carousel_lock:
+        return {
+            "total_images": len(carousel_images),
+            "current_index": current_index
+        }, 200
 
 
 @app.post("/")
 def post_message():
+    """Retrieve images from URL and populate carousel."""
+    global carousel_images, current_index
+
     data = request.json
 
     url = data.get("url", None)
@@ -103,16 +168,43 @@ def post_message():
 
     image_links = get_links_for_images(url)
 
-    for u in image_links:
-        print_image_to_display_from_url(u)
-        time.sleep(0.5)
+    if not image_links or isinstance(image_links, dict):
+        return {"message": "No images found at the provided URL"}, 404
 
-    return data, 200
+    # Load images into carousel
+    loaded_images = []
+    for u in image_links:
+        print(f"Loading image from: {u}")
+        img = load_image_from_url(u)
+        if img is not None:
+            loaded_images.append(img)
+
+    if not loaded_images:
+        return {"message": "Failed to load any images"}, 500
+
+    # Update carousel with new images
+    with carousel_lock:
+        carousel_images = loaded_images
+        current_index = 0
+
+    # Display the first image
+    display_current_image()
+
+    return {
+        "message": "Images loaded successfully",
+        "total_images": len(loaded_images),
+        "image_urls": image_links
+    }, 200
 
 
 if __name__ == "__main__":
     disp.clear((0, 0, 0))
     disp.display()
+
+    # Start keyboard listener in a separate thread
+    keyboard_thread = threading.Thread(target=keyboard_listener, daemon=True)
+    keyboard_thread.start()
+
     app.config['TESTING'] = False
     app.config['DEBUG'] = False
     app.run(debug=True, host=RUNNING_IP, port=5000)
