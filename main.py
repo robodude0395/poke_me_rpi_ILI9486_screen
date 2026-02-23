@@ -97,31 +97,36 @@ def render_messages(display_mode="portrait"):
     x, y = 0, 0
 
     if display_mode == "landscape":
-        # Landscape mode: messages are rotated 270 degrees, displayed as columns
-        # In landscape: (0,0) is bottom-left, draw from right side moving left
-        x = SCREEN_HEIGHT - 20
+        # Landscape mode: rotated 270 degrees
+        # Screen is rotated, so we draw columns from right to left
+        # Each column represents one message, flowing vertically (which reads left-to-right when rotated)
+
+        x = SCREEN_HEIGHT - char_height * 2  # Start from right side
 
         for msg in message_board.get_messages():
             message_string = msg['message']
+            y = char_height  # Start from bottom
 
-            # Start y position from bottom, text reads upward
-            y = SCREEN_WIDTH
+            # Draw "From:" label in yellow (rotated 270)
+            draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0))
+            y += char_height + 3
 
-            # Display sender info (rotated 270) at bottom
-            draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 270, font, fill=(255,255,0))
+            # Draw sender name in white (rotated 270)
+            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255))
+            y += char_height + 3
 
-            # Add more spacing to avoid overlap between sender and message
-            y -= char_width * 12
-
-            # Display message text (rotated 270)
+            # Draw message text in white (rotated 270)
             draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
-            y += char_width * (len(message_string) // 8 + 3)  # Increased divisor for shorter columns
 
-            # Move to next column (decrease x to go left)
+            # Calculate lines in message for spacing
+            msg_lines = get_message_line_count(message_string)
+            y += char_height * msg_lines
+
+            # Move to next column (move left since we start from right)
             x -= char_height * 4
 
-            # Stop if we run out of space
-            if x < 50:
+            # Stop if we run out of horizontal space
+            if x < char_height * 2:
                 break
     else:
         # Portrait mode: vertical orientation
