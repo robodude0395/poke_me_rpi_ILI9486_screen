@@ -97,14 +97,26 @@ def render_messages(display_mode="portrait"):
     x, y = 0, 0
 
     if display_mode == "landscape":
-        # Landscape mode: rotate text 90 degrees
+        # Landscape mode: messages displayed vertically with rotation
+        # Each message is a column with rotated text
+        column_width = char_width * 15  # Width allocated per message column
+
         for msg in message_board.get_messages():
             message_string = msg['message']
+
+            # Display sender info (rotated)
             draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 90, font, fill=(255,255,0))
-            x += char_width * 10  # Move to the right for next message
-            if x + char_width * 10 > SCREEN_WIDTH:
+
+            # Display message text below the sender (rotated)
+            draw_rotated_text(disp.buffer, message_string, (x, y + char_height * 2), 90, font, fill=(255,255,255))
+
+            # Move to next column
+            x += column_width
+
+            # Wrap to next row if we exceed screen width
+            if x + column_width > SCREEN_WIDTH:
                 x = 0
-                y += char_height + 3
+                y += SCREEN_HEIGHT // 2  # Move down for next row of messages
     else:
         # Portrait mode: vertical orientation
         for msg in message_board.get_messages():
