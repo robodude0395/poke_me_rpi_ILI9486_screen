@@ -57,20 +57,26 @@ print(f"Max chars per line: {MAX_CHAR_WIDTH}, lines per screen: {MAX_CHAR_HEIGHT
 # Define a function to create rotated text.  Unfortunately PIL doesn't have good
 # native support for rotated fonts, but this function can be used to make a
 # text image and rotate it so it's easy to paste in the buffer.
-def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255)):
+def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255), max_width=None, max_height=None):
     """
     Draw rotated text onto an image without clipping descenders.
     Handles all fonts and rotations cleanly.
-    Wraps text based on MAX_CHAR_WIDTH and MAX_CHAR_HEIGHT.
+    Wraps text based on max_width and max_height parameters.
     Returns the total height used for the text block.
     """
-    # Wrap text based on MAX_CHAR_WIDTH
+    # Use provided parameters or fall back to global values
+    if max_width is None:
+        max_width = MAX_CHAR_WIDTH
+    if max_height is None:
+        max_height = MAX_CHAR_HEIGHT
+
+    # Wrap text based on max_width
     lines = []
     words = text.split()
     current_line = ""
 
     for word in words:
-        if len(current_line) + len(word) + 1 <= MAX_CHAR_WIDTH:
+        if len(current_line) + len(word) + 1 <= max_width:
             current_line += word + " "
         else:
             if current_line:
@@ -79,8 +85,8 @@ def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255)):
     if current_line:
         lines.append(current_line.strip())
 
-    # Limit to MAX_CHAR_HEIGHT lines
-    lines = lines[:MAX_CHAR_HEIGHT]
+    # Limit to max_height lines
+    lines = lines[:max_height]
 
     # Draw each line
     total_height = 0
@@ -139,14 +145,14 @@ def render_messages(display_mode="portrait"):
             y = char_height  # Start from top, draw downward
 
             # Draw "From:" label in yellow (rotated 270)
-            height = draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0))
+            height = draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0), max_width=MAX_CHAR_WIDTH, max_height=MAX_CHAR_HEIGHT)
             x -= char_height + 5
 
             # Draw sender name in white (rotated 270)
-            height = draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255))
+            height = draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_WIDTH, max_height=MAX_CHAR_HEIGHT)
 
             # Draw message text in white (rotated 270) with text wrapping
-            height = draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
+            height = draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_WIDTH, max_height=MAX_CHAR_HEIGHT)
 
             # Move to next column (move left since we start from right)
             x -= char_height * 4
@@ -158,12 +164,12 @@ def render_messages(display_mode="portrait"):
         # Portrait mode: vertical orientation
         for msg in message_board.get_messages():
             message_string = msg['message']
-            draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
+            draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0), max_width=MAX_CHAR_WIDTH, max_height=MAX_CHAR_HEIGHT)
             x = char_width*6
-            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
+            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255), max_width=MAX_CHAR_WIDTH, max_height=MAX_CHAR_HEIGHT)
             x = 0
             y += char_height + 3
-            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
+            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255), max_width=MAX_CHAR_WIDTH, max_height=MAX_CHAR_HEIGHT)
             y += char_height * get_message_line_count(message_string)
 
     disp.display()
