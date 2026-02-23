@@ -111,7 +111,7 @@ def render_messages(display_mode="portrait"):
             y += line_height
 
             # Display message text
-            draw_rotated_text(disp.buffer, message_string, (x, y), 90, font, fill=(255,255,255))
+            draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
             msg_lines = get_message_line_count(message_string)
             y += line_height * msg_lines
 
