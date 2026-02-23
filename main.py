@@ -16,7 +16,7 @@ message_board = Messages(json_path="messages.json")
 RUNNING_IP = "0.0.0.0"
 
 # Display mode: "portrait" or "landscape"
-DISPLAY_MODE = "portrait"  # Change to "landscape" for landscape orientation
+DISPLAY_MODE = "landscape"  # Change to "landscape" for landscape orientation
 
 # Raspberry Pi configuration.
 DC = 24
