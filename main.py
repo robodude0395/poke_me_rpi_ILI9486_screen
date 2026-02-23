@@ -105,13 +105,13 @@ def render_messages(display_mode="portrait"):
             message_string = msg['message']
 
             # Start y position from bottom, text reads upward
-            y = 20
+            y = SCREEN_WIDTH
 
             # Display sender info (rotated 270) at bottom
             draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 270, font, fill=(255,255,0))
 
             # Add more spacing to avoid overlap between sender and message
-            y += char_width * 12
+            y -= char_width * 12
 
             # Display message text (rotated 270)
             draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
