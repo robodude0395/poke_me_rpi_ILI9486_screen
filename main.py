@@ -97,26 +97,31 @@ def render_messages(display_mode="portrait"):
     x, y = 0, 0
 
     if display_mode == "landscape":
-        # Landscape mode: messages displayed vertically with rotation
-        # Each message is a column with rotated text
-        column_width = char_width * 15  # Width allocated per message column
+        # Landscape mode: messages displayed horizontally side-by-side
+        # Each message is stacked vertically
+        line_height = char_height + 5
+        max_lines = 3
 
+        line_count = 0
         for msg in message_board.get_messages():
             message_string = msg['message']
 
-            # Display sender info (rotated)
-            draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 90, font, fill=(255,255,0))
+            # Display sender info
+            draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 0, font, fill=(255,255,0))
+            y += line_height
 
-            # Display message text below the sender (rotated)
-            draw_rotated_text(disp.buffer, message_string, (x, y + char_height * 2), 90, font, fill=(255,255,255))
+            # Display message text
+            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
+            msg_lines = get_message_line_count(message_string)
+            y += line_height * msg_lines
 
-            # Move to next column
-            x += column_width
+            line_count += 1 + msg_lines
 
-            # Wrap to next row if we exceed screen width
-            if x + column_width > SCREEN_WIDTH:
-                x = 0
-                y += SCREEN_HEIGHT // 2  # Move down for next row of messages
+            # Wrap to next column if we run out of vertical space
+            if line_count + 3 > MAX_CHAR_HEIGHT:
+                x += char_width * 20
+                y = 0
+                line_count = 0
     else:
         # Portrait mode: vertical orientation
         for msg in message_board.get_messages():
