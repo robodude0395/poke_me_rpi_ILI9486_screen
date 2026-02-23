@@ -15,6 +15,9 @@ message_board = Messages(json_path="messages.json")
 #RUNNING IP
 RUNNING_IP = "0.0.0.0"
 
+# Display mode: "portrait" or "landscape"
+DISPLAY_MODE = "portrait"  # Change to "landscape" for landscape orientation
+
 # Raspberry Pi configuration.
 DC = 24
 RST = 25
@@ -85,6 +88,37 @@ def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255)):
     # Paste into main image (mask keeps transparency)
     image.paste(rotated, position, rotated)
 
+def render_messages(display_mode="portrait"):
+    """
+    Render messages in the specified display mode.
+    display_mode: "portrait" or "landscape"
+    """
+    disp.clear((0, 0, 0))
+    x, y = 0, 0
+
+    if display_mode == "landscape":
+        # Landscape mode: rotate text 90 degrees
+        for msg in message_board.get_messages():
+            message_string = msg['message']
+            draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 90, font, fill=(255,255,0))
+            x += char_width * 10  # Move to the right for next message
+            if x + char_width * 10 > SCREEN_WIDTH:
+                x = 0
+                y += char_height + 3
+    else:
+        # Portrait mode: vertical orientation
+        for msg in message_board.get_messages():
+            message_string = msg['message']
+            draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
+            x = char_width*6
+            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
+            x = 0
+            y += char_height + 3
+            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
+            y += char_height * get_message_line_count(message_string)
+
+    disp.display()
+
 def validate_data(data: dict):
     if isinstance(data, dict) and all([isinstance(v, str) for v in data.values()]) and "from" in data and "message" in data:
         return data, 200
@@ -105,37 +139,12 @@ def post_message():
     if status_code == 200:
         #print update and display message board
         message_board.push_message(data)
-        disp.clear((0, 0, 0))
-
-        x, y = 0, 0
-
-        for msg in message_board.get_messages():
-            message_string = msg['message']
-            draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
-            x = char_width*6
-            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
-            x = 0
-            y += char_height + 3
-            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
-            y += char_height * get_message_line_count(message_string)
-
-        disp.display()
+        render_messages(DISPLAY_MODE)
 
     return data, 200
 
 if __name__ == "__main__":
-    disp.clear((0, 0, 0))
-    x, y = 0, 0
-    for msg in message_board.get_messages():
-            message_string = msg['message']
-            draw_rotated_text(disp.buffer, f"From:", (x, y), 0, font, fill=(255,255,0))
-            x = char_width*6
-            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 0, font, fill=(255,255,255))
-            x = 0
-            y += char_height + 3
-            draw_rotated_text(disp.buffer, message_string, (x, y), 0, font, fill=(255,255,255))
-            y += char_height * get_message_line_count(message_string)
-    disp.display()
+    render_messages(DISPLAY_MODE)
     app.config['TESTING'] = False
     app.config['DEBUG'] = False
     app.run(debug=True, host=RUNNING_IP, port=5000)
