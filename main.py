@@ -98,8 +98,8 @@ def render_messages(display_mode="portrait"):
 
     if display_mode == "landscape":
         # Landscape mode: messages are rotated 270 degrees, displayed as columns
-        # In landscape: (0,0) is bottom-left, y increases going UP
-        x = 10
+        # In landscape: (0,0) is bottom-left, x is vertical in landscape (small x = left side)
+        x = 0
 
         for msg in message_board.get_messages():
             message_string = msg['message']
@@ -117,11 +117,11 @@ def render_messages(display_mode="portrait"):
             draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
             y += char_width * (len(message_string) // 8 + 3)  # Increased divisor for shorter columns
 
-            # Move to next column
-            x += char_height * 3
+            # Move to next column (increase x to go right)
+            x += char_height * 4
 
             # Stop if we run out of horizontal space
-            if x > SCREEN_WIDTH - 50:
+            if x > SCREEN_HEIGHT - 50:
                 break
     else:
         # Portrait mode: vertical orientation
