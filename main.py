@@ -134,6 +134,7 @@ def render_messages(display_mode="portrait"):
         x = SCREEN_HEIGHT - char_height * 2  # Start from right side
 
         for msg in message_board.get_messages():
+            x -= char_height
             message_string = msg['message']
             y = char_height  # Start from top, draw downward
 
