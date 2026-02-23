@@ -107,13 +107,15 @@ def render_messages(display_mode="portrait"):
             # Start y position from bottom, text reads upward
             y = 20
 
-            # Display sender info (rotated 270)
+            # Display sender info (rotated 270) at bottom
             draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 270, font, fill=(255,255,0))
-            y += char_width * 8  # Move up by rotated character width
+
+            # Add more spacing to avoid overlap between sender and message
+            y += char_width * 12
 
             # Display message text (rotated 270)
             draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
-            y += char_width * (len(message_string) // 12 + 2)  # Move up by message length
+            y += char_width * (len(message_string) // 8 + 3)  # Increased divisor for shorter columns
 
             # Move to next column
             x += char_height * 3
