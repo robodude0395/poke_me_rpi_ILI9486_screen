@@ -139,16 +139,13 @@ def render_messages(display_mode="portrait"):
 
             # Draw "From:" label in yellow (rotated 270)
             height = draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0))
-            y += height + 10
-            x -= char_height + 2
+            x -= char_height + 5
 
             # Draw sender name in white (rotated 270)
             height = draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255))
-            y += height + 10
 
             # Draw message text in white (rotated 270) with text wrapping
             height = draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
-            y += height
 
             # Move to next column (move left since we start from right)
             x -= char_height * 4
