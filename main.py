@@ -61,32 +61,62 @@ def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255)):
     """
     Draw rotated text onto an image without clipping descenders.
     Handles all fonts and rotations cleanly.
+    Wraps text based on MAX_CHAR_WIDTH and MAX_CHAR_HEIGHT.
+    Returns the total height used for the text block.
     """
-    # Create a temporary draw object
-    draw = ImageDraw.Draw(image)
+    # Wrap text based on MAX_CHAR_WIDTH
+    lines = []
+    words = text.split()
+    current_line = ""
 
-    # Get text bounding box with offsets
-    bbox = draw.textbbox((0, 0), text, font=font)
-    width = bbox[2] - bbox[0]
-    height = bbox[3] - bbox[1]
+    for word in words:
+        if len(current_line) + len(word) + 1 <= MAX_CHAR_WIDTH:
+            current_line += word + " "
+        else:
+            if current_line:
+                lines.append(current_line.strip())
+            current_line = word + " "
+    if current_line:
+        lines.append(current_line.strip())
 
-    # Add padding to prevent clipping of descenders/ascenders
-    pad_x, pad_y = 4, 6
-    text_w = width + pad_x * 2
-    text_h = height + pad_y * 2
+    # Limit to MAX_CHAR_HEIGHT lines
+    lines = lines[:MAX_CHAR_HEIGHT]
 
-    # Create transparent RGBA image for text
-    text_img = Image.new("RGBA", (text_w, text_h), (0, 0, 0, 0))
-    text_draw = ImageDraw.Draw(text_img)
+    # Draw each line
+    total_height = 0
+    x_offset, y_offset = position
 
-    # Draw text centered with padding
-    text_draw.text((pad_x - bbox[0], pad_y - bbox[1]), text, font=font, fill=fill)
+    for line_idx, line in enumerate(lines):
+        # Create a temporary draw object
+        draw = ImageDraw.Draw(image)
 
-    # Rotate text
-    rotated = text_img.rotate(angle, expand=True)
+        # Get text bounding box with offsets
+        bbox = draw.textbbox((0, 0), line, font=font)
+        width = bbox[2] - bbox[0]
+        height = bbox[3] - bbox[1]
 
-    # Paste into main image (mask keeps transparency)
-    image.paste(rotated, position, rotated)
+        # Add padding to prevent clipping of descenders/ascenders
+        pad_x, pad_y = 4, 6
+        text_w = width + pad_x * 2
+        text_h = height + pad_y * 2
+
+        # Create transparent RGBA image for text
+        text_img = Image.new("RGBA", (text_w, text_h), (0, 0, 0, 0))
+        text_draw = ImageDraw.Draw(text_img)
+
+        # Draw text centered with padding
+        text_draw.text((pad_x - bbox[0], pad_y - bbox[1]), line, font=font, fill=fill)
+
+        # Rotate text
+        rotated = text_img.rotate(angle, expand=True)
+
+        # Paste into main image (mask keeps transparency)
+        y_pos = y_offset + (line_idx * (height + 3))
+        image.paste(rotated, (x_offset, y_pos), rotated)
+
+        total_height += height + 3
+
+    return total_height
 
 def render_messages(display_mode="portrait"):
     """
@@ -99,28 +129,25 @@ def render_messages(display_mode="portrait"):
     if display_mode == "landscape":
         # Landscape mode: rotated 270 degrees
         # Screen is rotated, so we draw columns from right to left
-        # Each column represents one message, flowing vertically (which reads left-to-right when rotated)
+        # Text flows downward on the screen
 
         x = SCREEN_HEIGHT - char_height * 2  # Start from right side
 
         for msg in message_board.get_messages():
             message_string = msg['message']
-            y = char_height  # Start from bottom
+            y = char_height  # Start from top, draw downward
 
             # Draw "From:" label in yellow (rotated 270)
-            draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0))
-            y += char_height + 3
+            height = draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0))
+            y += height + 3
 
             # Draw sender name in white (rotated 270)
-            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255))
-            y += char_height + 3
+            height = draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255))
+            y += height + 3
 
-            # Draw message text in white (rotated 270)
-            draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
-
-            # Calculate lines in message for spacing
-            msg_lines = get_message_line_count(message_string)
-            y += char_height * msg_lines
+            # Draw message text in white (rotated 270) with text wrapping
+            height = draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
+            y += height
 
             # Move to next column (move left since we start from right)
             x -= char_height * 4
