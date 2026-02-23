@@ -97,31 +97,31 @@ def render_messages(display_mode="portrait"):
     x, y = 0, 0
 
     if display_mode == "landscape":
-        # Landscape mode: messages displayed horizontally side-by-side
-        # Each message is stacked vertically
-        line_height = char_height + 5
-        max_lines = 3
-
-        line_count = 0
+        # Landscape mode: messages are rotated 270 degrees, displayed as columns
+        # Start from left and move right, messages read from bottom to top
+        x = 10
+        
         for msg in message_board.get_messages():
             message_string = msg['message']
-
-            # Display sender info
+            
+            # Start y position for this message column (will draw upward due to rotation)
+            y = SCREEN_HEIGHT - 20
+            
+            # Display sender info (rotated 270)
             draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 270, font, fill=(255,255,0))
-            y += line_height
-
-            # Display message text
+            y -= char_width * 10  # Move up by rotated character width for next message
+            
+            # Display message text (rotated 270)
             draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255))
             msg_lines = get_message_line_count(message_string)
-            y += line_height * msg_lines
-
-            line_count += 1 + msg_lines
-
-            # Wrap to next column if we run out of vertical space
-            if line_count + 3 > MAX_CHAR_HEIGHT:
-                x += char_width * 20
-                y = 0
-                line_count = 0
+            y -= char_width * (len(message_string) // 15 + 2)  # Account for message length
+            
+            # Move to next column
+            x += char_height * 3
+            
+            # Stop if we run out of horizontal space
+            if x > SCREEN_WIDTH - 50:
+                break
     else:
         # Portrait mode: vertical orientation
         for msg in message_board.get_messages():
