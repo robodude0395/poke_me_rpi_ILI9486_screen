@@ -107,7 +107,7 @@ def render_messages(display_mode="portrait"):
             message_string = msg['message']
 
             # Display sender info
-            draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 90, font, fill=(255,255,0))
+            draw_rotated_text(disp.buffer, f"From: {msg['from']}", (x, y), 270, font, fill=(255,255,0))
             y += line_height
 
             # Display message text
