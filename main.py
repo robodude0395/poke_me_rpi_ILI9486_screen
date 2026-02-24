@@ -149,11 +149,12 @@ def render_messages(display_mode="portrait"):
 
             # Draw sender name in white (rotated 270) - use char_height for consistent spacing
             y += 60
-            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
+            height = draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
 
             # Draw message text in white (rotated 270) with text wrapping
             y -= 60
             y += char_height + 3
+            x -= height + 5
             draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
             # Increment y based on message line count (same as portrait mode)
             y += char_height * get_message_line_count(message_string)
