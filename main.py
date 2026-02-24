@@ -117,10 +117,10 @@ def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255), 
         rotated = text_img.rotate(angle, expand=True)
 
         # Paste into main image (mask keeps transparency)
-        y_pos = y_offset + (line_idx * (height + 3))
+        y_pos = y_offset + (line_idx * (char_height + 5))
         image.paste(rotated, (x_offset, y_pos), rotated)
 
-        total_height += height + 3
+        total_height += char_height + 5
 
     return total_height
 
