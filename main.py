@@ -91,13 +91,6 @@ def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255), 
     # Draw each line
     total_height = 0
     x_offset, y_offset = position
-    
-    # Determine line spacing based on rotation angle
-    # For 270 degree rotated text, we need much more spacing
-    if angle == 270 or angle == -90:
-        line_spacing = char_width * 8  # Use char_width for rotated text spacing
-    else:
-        line_spacing = char_height + 5
 
     for line_idx, line in enumerate(lines):
         # Create a temporary draw object
@@ -124,10 +117,10 @@ def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255), 
         rotated = text_img.rotate(angle, expand=True)
 
         # Paste into main image (mask keeps transparency)
-        y_pos = y_offset + (line_idx * line_spacing)
+        y_pos = y_offset + (line_idx * (char_height + 5))
         image.paste(rotated, (x_offset, y_pos), rotated)
 
-        total_height += line_spacing
+        total_height += char_height + 5
 
     return total_height
 
