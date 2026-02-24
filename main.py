@@ -136,23 +136,25 @@ def render_messages(display_mode="portrait"):
         # Landscape mode: rotated 270 degrees
         # Screen is rotated, so we draw columns from right to left
         # Text flows downward on the screen
+        # Constraints are swapped: max_width uses MAX_CHAR_HEIGHT, max_height uses MAX_CHAR_WIDTH
 
         x = SCREEN_HEIGHT - char_height * 2  # Start from right side
 
         for msg in message_board.get_messages():
-            x -= 5
             message_string = msg['message']
             y = char_height  # Start from top, draw downward
 
             # Draw "From:" label in yellow (rotated 270)
             height = draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
-            x -= char_height + 5
+            y += height + 10
 
             # Draw sender name in white (rotated 270)
             height = draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
+            y += height + 10
 
             # Draw message text in white (rotated 270) with text wrapping
             height = draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
+            y += height
 
             # Move to next column (move left since we start from right)
             x -= char_height * 4
