@@ -117,8 +117,16 @@ def draw_rotated_text(image, text, position, angle, font, fill=(255, 255, 255), 
         rotated = text_img.rotate(angle, expand=True)
 
         # Paste into main image (mask keeps transparency)
-        y_pos = y_offset + (line_idx * (char_height + 5))
-        image.paste(rotated, (x_offset, y_pos), rotated)
+        # For landscape mode (270°), wrapped lines shift on x-axis
+        # For portrait mode (0°), wrapped lines shift on y-axis
+        if angle == 270:
+            # Landscape: shift x for wrapped lines
+            x_pos = x_offset - (line_idx * (char_height + 5))
+            image.paste(rotated, (x_pos, y_offset), rotated)
+        else:
+            # Portrait: shift y for wrapped lines
+            y_pos = y_offset + (line_idx * (char_height + 5))
+            image.paste(rotated, (x_offset, y_pos), rotated)
 
         total_height += char_height + 5
 
