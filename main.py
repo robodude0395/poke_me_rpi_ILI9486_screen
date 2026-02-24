@@ -145,18 +145,18 @@ def render_messages(display_mode="portrait"):
             y = char_height  # Start from top, draw downward
 
             # Draw "From:" label in yellow (rotated 270)
-            height = draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
-            y += 60
-
-            # Draw sender name in white (rotated 270)
-            height = draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
-            y -= 60
-            y += height + 10
-            x -= height + 5
-
+            draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
+            
+            # Draw sender name in white (rotated 270) - use char_height for consistent spacing
+            y += char_height + 3
+            draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
+            
             # Draw message text in white (rotated 270) with text wrapping
-            height = draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
-            y += height
+            y += char_height + 3
+            draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
+            
+            # Increment y based on message line count (same as portrait mode)
+            y += char_height * get_message_line_count(message_string)
 
             # Move to next column (move left since we start from right)
             x -= char_height * 4
