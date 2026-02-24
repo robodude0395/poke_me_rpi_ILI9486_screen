@@ -1,38 +1,38 @@
 [
     {
-        "from": "Omar",
-        "message": "I added systemctl service \nso that the pi server can \nrun without my interventio\n"
+        "from": "Alex",
+        "message": "Just poked you from across the office!"
     },
     {
-        "from": "Omar",
-        "message": "Server needed rebooting. H\nopefully it works over the\n weekend now\n"
+        "from": "Jamie",
+        "message": "Check out the new feature in the app"
     },
     {
-        "from": "Baljeet",
-        "message": "Your computer have virus\n"
+        "from": "Casey",
+        "message": "Coffee break? Come join us in the kitchen"
     },
     {
-        "from": "Adam Levine",
-        "message": "I'm at a payphone...\n"
+        "from": "Morgan",
+        "message": "Your code review is ready when you are"
     },
     {
-        "from": "Studio Laptop",
-        "message": "Hello from your windows su\nrface studio!\n"
+        "from": "Taylor",
+        "message": "Meeting moved to 3pm. See you then!"
     },
     {
-        "from": "Billie Jean",
-        "message": "Is not my lover\n"
+        "from": "Jordan",
+        "message": "Nice setup! Love the retro display"
     },
     {
-        "from": "Hello",
-        "message": "Is it me you're looking fo\nr?\n"
+        "from": "Riley",
+        "message": "This is the coolest thing Ive ever seen"
     },
     {
-        "from": "Hello",
-        "message": "Is it me you're looking fo\nr?\n"
+        "from": "Sam",
+        "message": "Poke poke! Testing the system out"
     },
     {
-        "from": "The Big Leagues",
-        "message": "We are calling!\n"
+        "from": "Pat",
+        "message": "Who invented this? Genius move"
     }
 ]
