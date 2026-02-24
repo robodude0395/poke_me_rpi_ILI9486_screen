@@ -146,9 +146,8 @@ def render_messages(display_mode="portrait"):
         # Text flows downward on the screen
         # Constraints are swapped: max_width uses MAX_CHAR_HEIGHT, max_height uses MAX_CHAR_WIDTH
 
-        x = SCREEN_HEIGHT - char_height * 2  # Start from right side
-
         for msg in message_board.get_messages():
+            x = SCREEN_WIDTH - char_height * 2  # Start from right side
             message_string = msg['message']
             y = char_height  # Start from top, draw downward
 
@@ -174,6 +173,7 @@ def render_messages(display_mode="portrait"):
             if x < char_height * 2:
                 break
     else:
+        x = SCREEN_HEIGHT - char_height * 2  # Start from right side
         # Portrait mode: vertical orientation
         for msg in message_board.get_messages():
             message_string = msg['message']
