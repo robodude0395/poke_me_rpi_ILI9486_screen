@@ -145,14 +145,14 @@ def render_messages(display_mode="portrait"):
             y = char_height  # Start from top, draw downward
 
             # Draw "From:" label in yellow (rotated 270)
-            height = draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0), max_width=MAX_CHAR_WIDTH, max_height=MAX_CHAR_HEIGHT)
+            height = draw_rotated_text(disp.buffer, f"From:", (x, y), 270, font, fill=(255,255,0), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
             x -= char_height + 5
 
             # Draw sender name in white (rotated 270)
-            height = draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_WIDTH, max_height=MAX_CHAR_HEIGHT)
+            height = draw_rotated_text(disp.buffer, f"{msg['from']}", (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
 
             # Draw message text in white (rotated 270) with text wrapping
-            height = draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_WIDTH, max_height=MAX_CHAR_HEIGHT)
+            height = draw_rotated_text(disp.buffer, message_string, (x, y), 270, font, fill=(255,255,255), max_width=MAX_CHAR_HEIGHT, max_height=MAX_CHAR_WIDTH)
 
             # Move to next column (move left since we start from right)
             x -= char_height * 4
